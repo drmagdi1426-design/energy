@@ -1,0 +1,50 @@
+{
+  "name": "tharwah-energy-matrix",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tharwah Team Energy Matrix — bilingual quadrant diagnostic with admin analytics.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "admin:create": "tsx scripts/create-admin.ts",
+    "retention:run": "tsx scripts/retention.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "bcryptjs": "3.0.3",
+    "iron-session": "9.0.1",
+    "next": "15.5.25",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "recharts": "3.9.2",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "eslint": "9.39.5",
+    "eslint-config-next": "15.5.25",
+    "@types/bcryptjs": "2.4.6",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.5",
+    "@types/react-dom": "19.2.5",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.5.26",
+    "prisma": "6.19.3",
+    "tailwindcss": "3.4.19",
+    "tsx": "4.23.13",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.2",
+    "postcss": "8.5.26"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

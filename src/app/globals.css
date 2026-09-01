@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Tharwah brand tokens.
+ *
+ * Fonts: English/LTR uses Arial. Arabic uses "Bahij Janna" first — this is a
+ * LICENSED font that is NOT distributed as a web font here; it will only
+ * render for a visitor who already has it installed locally (e.g. on a
+ * Tharwah-managed machine). Everyone else transparently falls back to IBM
+ * Plex Sans Arabic, loaded from Google Fonts as the guaranteed web-safe
+ * Arabic face. Do not remove the fallback or assume Bahij Janna is present.
+ */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-navy: #06374f;
+  --color-academy-blue: #3c7dcb;
+  --color-mint: #e3f4f7;
+  --color-amber: #e8a33d;
+  --color-amber-tint: #fbf1e0;
+  --color-gray-mid: #797979;
+  --color-gray-dark: #4d4f53;
+  --color-page-bg: #f2f2f2;
+  --color-surface: #ffffff;
+  --color-danger: #b3261e;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-page-bg);
+  color: var(--color-navy);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html[dir='rtl'] body {
+  font-family: 'Bahij Janna', 'IBM Plex Sans Arabic', Tahoma, sans-serif;
+}
+
+/* Isolate embedded Latin terms/numerals inside Arabic text so the browser's
+   own bidi algorithm keeps them intact, per the brand's RTL guidance — no
+   manual reordering characters anywhere in this codebase. */
+.bidi-isolate {
+  unicode-bidi: isolate;
+}
+
+/* Respect the user's motion preference throughout the app. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.brand-card {
+  background-color: var(--color-surface);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(6, 55, 79, 0.08), 0 1px 6px rgba(6, 55, 79, 0.06);
+  padding-inline: 1.5rem;
+  padding-block: 1.5rem;
+}
+
+.brand-card--mint {
+  background-color: var(--color-mint);
+}
+
+.brand-card--amber {
+  background-color: var(--color-amber-tint);
+  border-inline-start: 4px solid var(--color-amber);
+}
+
+.btn-primary {
+  background-color: var(--color-academy-blue);
+  color: #ffffff;
+  border-radius: 0.5rem;
+  padding-inline: 1.25rem;
+  padding-block: 0.65rem;
+  font-weight: 600;
+  transition: background-color 150ms ease;
+}
+
+.btn-primary:hover {
+  background-color: #326aad;
+}
+
+.btn-primary:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-academy-blue);
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-navy);
+  border: 1px solid var(--color-gray-mid);
+  border-radius: 0.5rem;
+  padding-inline: 1.25rem;
+  padding-block: 0.6rem;
+  font-weight: 500;
+}
+
+.field-label {
+  color: var(--color-navy);
+  font-weight: 600;
+}
+
+.field-help {
+  color: var(--color-gray-mid);
+  font-size: 0.875rem;
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: 0.875rem;
+}
+
+/* Wide tables/charts scroll horizontally on narrow screens instead of
+   forcing the page itself to scroll sideways. */
+.scroll-container {
+  overflow-x: auto;
+}
