@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 223" role="img" aria-label="Tharwah Academy">
+  <!--
+    Hand-recreated from a reference image supplied in chat — this is NOT the
+    authentic Tharwah vector asset (exact font, ring geometry, and spacing
+    may differ from the real brand file). Replace this file with the real
+    logo (transparent background, ~1.793 aspect ratio) when available; no
+    other change is needed since Header.tsx already references this path.
+    For light backgrounds only — request the reversed/light mark separately
+    for a dark hero section.
+  -->
+  <title>Tharwah Academy</title>
+  <g fill="none" stroke="#06374F" stroke-width="4.5">
+    <circle cx="30" cy="28" r="17" />
+    <circle cx="54" cy="28" r="17" />
+  </g>
+  <g fill="#06374F">
+    <circle cx="112" cy="10" r="4.5" />
+    <circle cx="128" cy="18" r="4.5" />
+    <circle cx="120" cy="30" r="4.5" />
+  </g>
+  <text
+    x="10"
+    y="98"
+    font-family="Arial, Helvetica, sans-serif"
+    font-weight="700"
+    font-size="58"
+    letter-spacing="2"
+    fill="#06374F"
+  >THARWAH</text>
+  <path d="M 10 118 H 384 V 140" fill="none" stroke="#06374F" stroke-width="3.5" />
+  <rect x="0" y="158" width="400" height="53" rx="26.5" fill="#3C7DCB" />
+  <text
+    x="200"
+    y="192"
+    font-family="Arial, Helvetica, sans-serif"
+    font-weight="600"
+    font-size="26"
+    letter-spacing="9"
+    fill="#FFFFFF"
+    text-anchor="middle"
+  >ACADEMY</text>
+</svg>

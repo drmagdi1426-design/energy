@@ -1,0 +1,168 @@
+// Tharwah Team Energy Matrix — data model
+//
+// Design principle (per build spec): raw item answers, computed quadrant
+// scores, and timestamps are stored in separate tables/columns. Nothing here
+// is ever derived on the fly in the frontend — see src/lib/scoring.ts, the
+// single server-side scoring module that populates ComputedScore.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Quadrant {
+  SURVIVAL
+  PERFORMANCE
+  BURNOUT
+  RENEWAL
+}
+
+enum BehavioralItemCode {
+  S1
+  S2
+  P1
+  P2
+  B1
+  B2
+  R1
+  R2
+}
+
+enum Locale {
+  EN
+  AR
+}
+
+// One respondent submission. Anonymous by default (see README "Decisions Log"):
+// no name, email, or device identifier is ever stored. `team` / `department`
+// are optional, respondent-supplied free text used only for aggregate filtering.
+model Response {
+  id          String   @id @default(cuid())
+  submittedAt DateTime @default(now())
+  locale      Locale
+
+  // Optional, explicitly-labelled-optional fields (data minimization, PDPL Art. on
+  // purpose limitation). Never required to submit.
+  team        String?
+  department  String?
+  cycleLabel  String? // e.g. "2026-Q1" — lets admins group submissions into reporting cycles
+
+  // Consent capture — required before any other field is accepted (see /api/submit).
+  consentAcceptedAt DateTime
+
+  // Retention / PDPL lifecycle. `anonymizedAt` is set by the retention job
+  // (scripts/retention.ts) once a response passes DATA_RETENTION_MONTHS; at
+  // that point `team`/`department`/`cycleLabel` are scrubbed but the
+  // quadrant-level statistics survive for historical trend charts.
+  anonymizedAt DateTime?
+
+  quadrantAudit   QuadrantAudit?
+  behavioralItems BehavioralItem[]
+  computedScore   ComputedScore?
+
+  @@index([submittedAt])
+  @@index([cycleLabel])
+  @@index([team])
+}
+
+// Section A — Quadrant Time-Distribution Audit. Four respondent-entered
+// percentages of last-30-days working hours, validated server-side to sum to 100.
+model QuadrantAudit {
+  id             String   @id @default(cuid())
+  response       Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  responseId     String   @unique
+  survivalPct    Int
+  performancePct Int
+  burnoutPct     Int
+  renewalPct     Int
+}
+
+// Section B — one row per behavioral diagnostic item (S1, S2, P1, P2, B1, B2, R1, R2),
+// each a raw 1–5 rating exactly as submitted. Kept separate from ComputedScore
+// so the underlying answers are always auditable independent of scoring logic.
+model BehavioralItem {
+  id         String             @id @default(cuid())
+  response   Response           @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  responseId String
+  itemCode   BehavioralItemCode
+  rawScore   Int
+
+  @@unique([responseId, itemCode])
+}
+
+// Server-computed, server-validated results. This table is the ONLY place
+// scored/derived values are stored — always written by src/lib/scoring.ts,
+// never by client input.
+model ComputedScore {
+  id         String   @id @default(cuid())
+  response   Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  responseId String   @unique
+
+  survivalSum    Int // S1+S2, range 2-10
+  performanceSum Int // P1+P2, range 2-10
+  burnoutSum     Int // B1+B2, range 2-10
+  renewalSum     Int // R1+R2, range 2-10
+
+  dominant       Quadrant? // null when tied across two or more quadrants
+  isTie          Boolean   @default(false)
+  tiedQuadrants  Quadrant[] // populated only when isTie = true
+
+  // Risk-band zone name per quadrant when that quadrant's sum is 7-10.
+  // See src/lib/scoring.ts ZONE_BY_QUADRANT for the assumed mapping (flagged
+  // as a decision point in README since the source instrument text wasn't provided).
+  survivalZone    String?
+  performanceZone String?
+  burnoutZone     String?
+  renewalZone     String?
+
+  computedAt DateTime @default(now())
+}
+
+// Single shared admin credential (v1, per build spec). Password is never
+// stored in reversible form — only a bcrypt hash.
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Login attempt log, used to implement lockout after repeated failures
+// (brute-force protection) and as part of the PDPL audit trail.
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  username  String
+  ipAddress String
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([username, createdAt])
+  @@index([ipAddress, createdAt])
+}
+
+// PDPL audit trail: every time an admin views or exports response data.
+model AuditLog {
+  id          String   @id @default(cuid())
+  adminUsername String
+  action      String // e.g. "view_dashboard", "view_response", "export_csv", "delete_response"
+  detail      String? // e.g. response id, filter parameters (no raw personal data)
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// Coarse-grained submission rate limiting (per IP, per time window) for the
+// public questionnaire endpoint — DB-backed so no extra infra is required.
+model SubmissionRateLimit {
+  id         String   @id @default(cuid())
+  ipAddress  String
+  createdAt  DateTime @default(now())
+
+  @@index([ipAddress, createdAt])
+}
