@@ -57,7 +57,7 @@ is written to the database.
 **Prerequisites:** Node.js ≥ 20, a PostgreSQL 14+ instance.
 
 ```bash
-npm install
+npm install                    # also runs `prisma generate` via postinstall
 cp .env.example .env
 # edit .env — at minimum set DATABASE_URL and SESSION_SECRET (see below)
 
@@ -66,6 +66,22 @@ npm run admin:create           # interactive: creates the admin username/passwor
 
 npm run dev                    # http://localhost:3000
 ```
+
+> **On Windows (Command Prompt):** `cp` isn't a `cmd.exe` command — use `copy .env.example .env`
+> instead, and edit `.env` with Notepad or VS Code (not a word processor). If you hit
+> `the URL must start with the protocol postgresql://` from a command that just printed
+> "Environment variables loaded from .env", the `.env` file's encoding or a stray
+> character is confusing the parser — don't debug it, just set the variable for that
+> terminal session directly and re-run the command:
+> ```
+> set DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
+> echo %DATABASE_URL%
+> npx prisma migrate deploy
+> ```
+> (no quotes around the value in `cmd.exe` — unlike bash, quotes become part of the
+> string.) If `npm run admin:create` fails with `@prisma/client did not initialize yet`,
+> run `npx prisma generate` once — it should already have run via `postinstall`, but
+> run it manually if `npm install` was invoked with `--ignore-scripts` or similar.
 
 Visit `http://localhost:3000` (redirects to `/en`) for the questionnaire, or
 `/admin/login` for the dashboard.
