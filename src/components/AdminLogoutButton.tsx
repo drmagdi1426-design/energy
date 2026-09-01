@@ -17,7 +17,7 @@ export function AdminLogoutButton({ dict, csrfToken }: { dict: Dictionary; csrfT
   }
 
   return (
-    <button type="button" onClick={handleLogout} className="text-sm font-medium text-mint hover:text-white">
+    <button type="button" onClick={handleLogout} className="text-sm font-medium text-gray-mid hover:text-navy">
       {dict.admin.logout}
     </button>
   );

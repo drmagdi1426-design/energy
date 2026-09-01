@@ -27,10 +27,14 @@ function generateToken(): string {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isApi = pathname.startsWith('/api/');
+  // Static files served from /public (e.g. /brand/tharwah-logo.svg,
+  // /robots.txt) have a file extension in their last segment — never
+  // locale-redirect those.
+  const isStaticAsset = /\.[a-zA-Z0-9]+$/.test(pathname);
 
   let response: NextResponse;
 
-  if (isApi) {
+  if (isApi || isStaticAsset) {
     response = NextResponse.next();
   } else {
     const segments = pathname.split('/').filter(Boolean);

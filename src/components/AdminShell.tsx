@@ -19,20 +19,27 @@ export function AdminShell({
 }) {
   return (
     <div className="min-h-screen bg-page-gray">
-      <header className="border-b border-black/5 bg-navy text-white">
+      {/* Light background — the colored Tharwah logo is only used on light
+          backgrounds per brand guidance; request the reversed mark separately
+          if a dark admin header is ever wanted. */}
+      <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
-          <div>
-            <p className="text-lg font-bold">{dict.common.appName}</p>
-            <p className="text-xs text-mint">{dict.common.tagline}</p>
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element -- static brand asset */}
+            <img src="/brand/tharwah-logo.svg" alt="Tharwah Academy" className="h-9 w-auto shrink-0" />
+            <div className="border-s border-gray-mid/20 ps-3">
+              <p className="text-sm font-bold text-navy">{dict.common.appName}</p>
+              <p className="text-xs font-medium text-academy-blue">{dict.common.tagline}</p>
+            </div>
           </div>
-          <nav className="flex items-center gap-5">
-            <Link href="/admin/dashboard" className="text-sm font-medium hover:underline">
+          <nav className="flex flex-wrap items-center gap-5">
+            <Link href="/admin/dashboard" className="text-sm font-medium text-navy hover:underline">
               {dict.admin.navDashboard}
             </Link>
-            <Link href="/admin/responses" className="text-sm font-medium hover:underline">
+            <Link href="/admin/responses" className="text-sm font-medium text-navy hover:underline">
               {dict.admin.navResponses}
             </Link>
-            <span className="text-sm text-mint">{username}</span>
+            <span className="text-sm text-gray-mid">{username}</span>
             <AdminLocaleToggle locale={locale} label={dict.common.languageToggle} />
             <AdminLogoutButton dict={dict} csrfToken={csrfToken} />
           </nav>

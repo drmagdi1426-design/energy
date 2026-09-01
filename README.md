@@ -237,10 +237,15 @@ instrument text or explicit direction — confirm or override each with Tharwah:
    a single deployable repo with no undocumented separate services, per the constraint.
 7. **Data region/hosting provider** — deliberately left unset; see
    [PDPL compliance](#pdpl-compliance).
-8. **Tharwah Academy logo.** The actual logo file (transparent PNG/SVG, 1.793 aspect
-   ratio) wasn't supplied to this build. The header currently renders a text wordmark in
-   brand colors instead — see the comment in `src/components/Header.tsx` for exactly where
-   to drop in the real asset (`public/brand/tharwah-logo.svg`) once available. Bahij Janna
+8. **Tharwah Academy logo.** The authentic vector/transparent asset still wasn't supplied
+   as a file — only a reference image shown in chat, which this session has no tool to
+   save as-is. `public/brand/tharwah-logo.svg` is a hand-recreated approximation built
+   from that reference (same layout: ring mark, THARWAH wordmark, "ACADEMY" pill,
+   ~1.793 aspect ratio) and is wired into both the respondent header
+   (`src/components/Header.tsx`) and the admin header (`src/components/AdminShell.tsx`).
+   **Treat it as a placeholder, not the final brand asset** — replace that one file with
+   the real logo (transparent background) once Tharwah provides it; nothing else needs to
+   change. Bahij Janna
    (the brand's Arabic display font) is referenced first in the Arabic font stack but is a
    licensed, non-web font — it will only render for a visitor who already has it installed
    locally; everyone else gets the documented fallback, IBM Plex Sans Arabic, loaded from
